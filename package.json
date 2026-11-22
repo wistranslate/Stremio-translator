@@ -1,11 +1,9 @@
 {
   "name": "stremio-translator",
   "version": "1.0.0",
-  "description": "Stremio Spanish Subtitle Translator Addon",
+  "description": "Traductor de subtítulos para Stremio",
   "main": "api/index.js",
   "dependencies": {
-    "@iamtraction/google-translate": "^1.1.2",
-    "node-fetch": "^2.6.7",
-    "stremio-addon-sdk": "^1.6.7"
+    "stremio-addon-sdk": "^1.8.0"
   }
 }
