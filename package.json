@@ -2,8 +2,10 @@
   "name": "stremio-translator",
   "version": "1.0.0",
   "description": "Traductor de subtítulos para Stremio",
-  "main": "index.js",
+  "main": "api/index.js",
   "dependencies": {
-    "stremio-addon-sdk": "latest"
+    "stremio-addon-sdk": "latest",
+    "@vitalets/google-translate-api": "^9.2.0",
+    "node-fetch": "^2.6.7"
   }
 }
