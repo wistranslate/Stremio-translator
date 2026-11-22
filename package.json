@@ -2,8 +2,8 @@
   "name": "stremio-translator",
   "version": "1.0.0",
   "description": "Traductor de subtítulos para Stremio",
-  "main": "api/index.js",
+  "main": "index.js",
   "dependencies": {
-    "stremio-addon-sdk": "^1.8.0"
+    "stremio-addon-sdk": "latest"
   }
 }
