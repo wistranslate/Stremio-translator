@@ -14,15 +14,12 @@ const manifest = {
 const builder = new addonBuilder(manifest);
 
 builder.defineSubtitlesHandler(async function(args) {
-    // Aquí irá la lógica de tus subtítulos
     return { subtitles: [] };
 });
 
-module.exports = function(req, res) {
-    // Permitir CORS para la aplicación de Stremio
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Headers', '*');
+// Render asigna el puerto automáticamente con process.env.PORT
+const port = process.env.PORT || 7000;
 
-    const sdkInterface = builder.getInterface();
-    serveHTTP(sdkInterface, { req, res, cache: 0 });
-};
+serveHTTP(builder.getInterface(), { port });
+
+console.log(`Addon de Stremio activo en el puerto ${port}`);
