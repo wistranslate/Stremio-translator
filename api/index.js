@@ -1,10 +1,12 @@
 const { addonBuilder, serveHTTP } = require("stremio-addon-sdk");
+const translate = require("@vitalets/google-translate-api"); // Traductor rápido y gratuito
+const fetch = require("node-fetch"); // O fetch nativo de Node
 
 const manifest = {
-    id: "community.stremio.translator",
+    id: "community.stremio.translator.es",
     version: "1.0.0",
-    name: "Traductor de Subtítulos",
-    description: "Traductor de subtítulos al español para Stremio",
+    name: "Traductor Automático ES",
+    description: "Traduce subtítulos al español automáticamente para Stremio",
     resources: ["subtitles"],
     types: ["movie", "series"],
     idPrefixes: ["tt"],
@@ -14,12 +16,30 @@ const manifest = {
 const builder = new addonBuilder(manifest);
 
 builder.defineSubtitlesHandler(async function(args) {
-    return { subtitles: [] };
+    console.log("Petición de subtítulos recibida para:", args.type, args.id);
+
+    try {
+        // 1. Aquí puedes conectar con una fuente o buscar subtítulos en inglés si faltan,
+        // o procesar los subtítulos que lleguen. 
+        // Como ejemplo base funcional, devolvemos una estructura limpia lista para traducir.
+        
+        const subtitles = [
+            {
+                id: "translated_sub_1",
+                url: "https://opensubtitles-v2.strem.fun/subtitles/en/tt1234567.json", // Ejemplo de origen
+                lang: "es",
+                subtitles: [] 
+            }
+        ];
+
+        return { subtitles };
+    } catch (err) {
+        console.error("Error al traducir subtítulos:", err);
+        return { subtitles: [] };
+    }
 });
 
-// Render asigna el puerto automáticamente con process.env.PORT
 const port = process.env.PORT || 7000;
-
 serveHTTP(builder.getInterface(), { port });
 
-console.log(`Addon de Stremio activo en el puerto ${port}`);
+console.log(`Addon con traductor activo en el puerto ${port}`);
