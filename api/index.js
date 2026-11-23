@@ -4,7 +4,7 @@ const fetch = require("node-fetch");
 
 const manifest = {
     id: "community.stremio.translator.es",
-    version: "1.0.4",
+    version: "1.0.7",
     name: "Traductor Automático ES",
     description: "Traduce subtítulos al español automáticamente para Stremio",
     resources: ["subtitles"],
@@ -19,30 +19,41 @@ builder.defineSubtitlesHandler(async function(args) {
     console.log("Petición de subtítulos para ID:", args.id);
 
     try {
-        // En lugar de buscar a ciegas, intentamos localizar subtítulos base o generamos una traducción adaptada
-        // Vamos a traducir un bloque de prueba dinámico basado en la petición para verificar flujo,
-        // o puedes enlazar aquí la URL de un subtítulo en inglés si la detecta el addon.
-        
-        const textoBase = "1\n00:00:01,000 --> 00:00:04,000\nThis is a test subtitle being translated live for your series.";
+        // 1. Buscamos el subtítulo en inglés disponible para este identificador de Stremio
+        const subApiUrl = `https://opensubtitles-v2.strem.fun/subtitles/en/${args.id}.json`;
+        const response = await fetch(subApiUrl);
+        const data = await response.json();
 
-        // Traducimos al español
-        const res = await translate(textoBase, { to: 'es' });
+        let srtContent = "";
+
+        if (data && data.subtitles && data.subtitles.length > 0 && data.subtitles[0].url) {
+            // 2. Descargamos el archivo .srt original en inglés
+            const srtRes = await fetch(data.subtitles[0].url);
+            srtContent = await srtRes.text();
+        } else {
+            // Si por lo que sea no encuentra archivo en esa ruta, usamos un texto base de aviso
+            srtContent = "1\n00:00:01,000 --> 00:00:05,000\nNo se encontraron subtítulos en inglés para traducir.";
+        }
+
+        // 3. Traducimos todo el contenido al español usando Google Translate al vuelo
+        const res = await translate(srtContent, { to: 'es' });
         const textoTraducido = res.text;
 
+        // 4. Codificamos el resultado para entregárselo a Stremio
         const base64Sub = Buffer.from(textoTraducido).toString('base64');
         const dataUrl = `data:text/plain;base64,${base64Sub}`;
 
         return {
             subtitles: [
                 {
-                    id: "es_traducido_funcional",
+                    id: "es_traducido_real",
                     url: dataUrl,
                     lang: "es"
                 }
             ]
         };
     } catch (err) {
-        console.error("Error en el traductor:", err);
+        console.error("Error en la traducción real:", err);
         return {
             subtitles: [
                 {
@@ -58,4 +69,4 @@ builder.defineSubtitlesHandler(async function(args) {
 const port = process.env.PORT || 7000;
 serveHTTP(builder.getInterface(), { port });
 
-console.log(`Addon activo en el puerto ${port}`);
+console.log(`Addon con traductor real activo en el puerto ${port}`);
