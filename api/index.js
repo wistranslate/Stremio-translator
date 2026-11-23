@@ -14,16 +14,15 @@ const manifest = {
 const builder = new addonBuilder(manifest);
 
 builder.defineSubtitlesHandler(async function(args) {
-    console.log("Petición de subtítulos para:", args.id);
+    console.log("Petición de subtítulos para ID:", args.id);
 
-    // Estructura válida para que Stremio desbloquee y permita seleccionar el español
+    // URL directa al archivo srt que acabamos de subir en GitHub
     return {
         subtitles: [
             {
-                id: "traducido_es",
+                id: "traducido_es_1",
                 url: "https://raw.githubusercontent.com/wistranslate/Stremio-translator/main/empty.srt",
-                lang: "es",
-                format: "srt"
+                lang: "es"
             }
         ]
     };
